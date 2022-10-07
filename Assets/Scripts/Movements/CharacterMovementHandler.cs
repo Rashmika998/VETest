@@ -24,12 +24,9 @@ public class CharacterMovementHandler : NetworkBehaviour
     bool onSurface;
     public float surfaceDistance = 0.4f;
     public LayerMask surfaceMask;
-    //Rotation
-    // float cameraRotationX = 0;
-
+ 
     //Other components
     NetworkCharacterControllerPrototypeCustom networkCharacterControllerPrototypeCustom;
-    // Camera localCamera;
 
     private void Awake()
     {
@@ -50,7 +47,7 @@ public class CharacterMovementHandler : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         //Get the input from the network
-        if (GetInput(out NetworkInputData networkInputData))
+        if (GetInput(out NetworkInputData networkInputData) &&  Runner.IsForward)
         {
             Vector3 direction = new Vector3(networkInputData.movementInput.x, 0f, networkInputData.movementInput.y).normalized;
             if (direction.magnitude >= 0.1f)
