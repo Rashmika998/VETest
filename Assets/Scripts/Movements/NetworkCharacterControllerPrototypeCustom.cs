@@ -100,6 +100,7 @@ public class NetworkCharacterControllerPrototypeCustom : NetworkTransform
     /// </summary>
     public virtual void Move(Vector3 direction)
     {
+        Debug.Log("walking in nccpc" + Object.Id);
         var deltaTime = Runner.DeltaTime;
         var previousPos = transform.position;
         var moveVelocity = Velocity;

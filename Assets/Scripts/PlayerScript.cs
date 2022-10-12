@@ -6,7 +6,7 @@ public class PlayerScript : MonoBehaviour
 {
     [Header("player Movement")]
     public float playerSpeed=1.9f;
-
+    public string TextureURL = "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/dog-puppy-on-garden-royalty-free-image-1586966191.jpg";
     [Header("Player Animator and Gravity")]
     public CharacterController cC;
     public float gravity=-9.81f;

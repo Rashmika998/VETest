@@ -38,6 +38,8 @@ public class CharacterInputHandler : MonoBehaviour
         //Move data
         networkInputData.movementInput = moveInputVector;
 
+        networkInputData.rotationInput = Camera.main.transform.eulerAngles.y;
+
         //Jump data
         networkInputData.isJumpPressed = isJumpButtonPressed;
 

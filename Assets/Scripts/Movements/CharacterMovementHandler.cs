@@ -15,25 +15,21 @@ public class CharacterMovementHandler : NetworkBehaviour
 
     [Header("Player Script Cameras")]
     public Transform playerCamera;
-
     [Header("Player Jumping and velocity")]
     Vector3 velocity;
     public float turnClamTime = 0.1f;
     float turnCalmVelocity;
     public Transform surfaceCheck;
-    bool onSurface;
-    public float surfaceDistance = 0.4f;
+
     public LayerMask surfaceMask;
-    //Rotation
-    // float cameraRotationX = 0;
 
     //Other components
     NetworkCharacterControllerPrototypeCustom networkCharacterControllerPrototypeCustom;
-    // Camera localCamera;
-
+    NetworkMecanimAnimator networkMecanimAnimator;
     private void Awake()
     {
         networkCharacterControllerPrototypeCustom = GetComponent<NetworkCharacterControllerPrototypeCustom>();
+        networkMecanimAnimator = GetComponent<NetworkMecanimAnimator>();
     }
 
     // Start is called before the first frame update
@@ -52,15 +48,19 @@ public class CharacterMovementHandler : NetworkBehaviour
         //Get the input from the network
         if (GetInput(out NetworkInputData networkInputData))
         {
+
+            networkMecanimAnimator.Animator = animator;
             Vector3 direction = new Vector3(networkInputData.movementInput.x, 0f, networkInputData.movementInput.y).normalized;
             if (direction.magnitude >= 0.1f)
             {
+                Debug.Log(networkInputData.movementInput + " walking" + Object.Id);
+                networkMecanimAnimator.Animator.SetBool("Idle", false);
+                networkMecanimAnimator.Animator.SetBool("Walk", true);
 
-                animator.SetBool("Walk", true);
-                animator.SetBool("Idle", false);
-
+                //networkCharacterControllerPrototypeCustom.Rotate(networkInputData.rotationInput);
                 //rotation
-                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + playerCamera.eulerAngles.y;
+                float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + networkInputData.rotationInput;
+                //Camera.main.transform.eulerAngles.y;
                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnCalmVelocity, turnClamTime);
                 transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
@@ -68,17 +68,20 @@ public class CharacterMovementHandler : NetworkBehaviour
 
                 networkCharacterControllerPrototypeCustom.Move(moveDirection.normalized * playerSpeed * Time.deltaTime);
 
+                CheckFallRespawn();
+
             }
             else
             {
-                animator.SetBool("Idle", true);
-                animator.SetBool("Walk", false);
+                networkMecanimAnimator.Animator.SetBool("Idle", true);
+                networkMecanimAnimator.Animator.SetBool("Walk", false);
             }
         }
     }
 
-    public void SetViewInputVector(Vector2 viewInput)
+    void CheckFallRespawn()
     {
-        this.viewInput = viewInput;
+        if (transform.position.y < -12)
+            transform.position = Utils.GetRandomSpawnPoint();
     }
 }
