@@ -53,7 +53,6 @@ public class CharacterMovementHandler : NetworkBehaviour
             Vector3 direction = new Vector3(networkInputData.movementInput.x, 0f, networkInputData.movementInput.y).normalized;
             if (direction.magnitude >= 0.1f)
             {
-                Debug.Log(networkInputData.movementInput + " walking" + Object.Id);
                 networkMecanimAnimator.Animator.SetBool("Idle", false);
                 networkMecanimAnimator.Animator.SetBool("Walk", true);
 
